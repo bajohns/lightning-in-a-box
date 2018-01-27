@@ -1,0 +1,42 @@
+version: '2.1'
+
+services:
+  lnd:
+    build: lnd/
+    volumes:
+      - ./run/${CHAIN_NETWORK_NAME}/lnd:/root/.lnd
+      - ./run/${CHAIN_NETWORK_NAME}/rpc:/rpc
+    ports:
+      - "9735:9735"
+      - "10009:10009"
+    env_file:
+      - ./default.env
+      - ./.env
+      
+  btcd:
+    build: btcd/
+    volumes:
+      - ./run/${CHAIN_NETWORK_NAME}/btcd:/root/.btcd
+      - ./run/${CHAIN_NETWORK_NAME}/rpc:/rpc
+    ports:
+      - "8333:8333"
+      - "8334:8334"
+      - "18333:18333"
+      - "18334:18334"
+    env_file:
+      - ./default.env
+      - ./.env
+
+  bitcoind:
+    build: bitcoind/
+    volumes:
+      - ./run/${CHAIN_NETWORK_NAME}/bitcoind:/root/.bitcoin/${CHAIN_NETWORK_NAME}
+    ports:
+      - "8333"
+      - "8334"
+      - "18333"
+      - "18334"
+      - "28332"
+    env_file:
+      - ./default.env
+      - ./.env

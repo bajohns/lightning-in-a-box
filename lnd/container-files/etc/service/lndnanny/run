@@ -1,0 +1,29 @@
+#!/bin/bash
+
+{
+  sleep 60
+  while [ true ]; do
+    echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") Peers: $(wlncli listpeers | jq -cr '.peers | map(.address)')"
+    SYNC_ED=$(wlncli getinfo | jq '.synced_to_chain')
+    PEER_COUNT=$(wlncli listpeers | jq '.peers | length')
+    if [[ ${PEER_COUNT} -lt "2" && ${SYNC_ED} == 'true' ]]; then
+      echo "Attempting to reconnect"
+      {
+        if [[ ${CHAIN_NETWORK_CLASS} == "mainnet" ]]; then
+          wlncli connect --perm 02f6725f9c1c40333b67faea92fd211c183050f28df32cac3f9d69685fe9665432@104.198.32.198 # Blockstream store
+          wlncli connect --perm 0293c7e12c80f1147b84420958d6b6c7ff72ce53d949d53e7fd974d66548d271c5@lnd.rows.io:9735
+          wlncli connect --perm 039514e5d704c59a0eba65d25fc5fe559a1641243ccdf80c980b1fc10ca9c30ca2@52.211.235.81:9735
+          wlncli connect --perm 02eccebd9ed98f6d267080a58194dbe554a2b33d976eb95bb7c116d00fd64c4a13@45.77.7.202:9735
+        elif [[ ${CHAIN_NETWORK_CLASS} == "testnet" ]]; then
+          wlncli connect --perm 03933884aaf1d6b108397e5efe5c86bcf2d8ca8d2f700eda99db9214fc2712b134@34.250.234.192:9735 # endurance
+          wlncli connect --perm 02d2ccdf98507238b7980c94616815ad2fec75f048caeaba738f408da363e43ba1@71.14.230.82:9735 # MyCryptoGuru_LN1
+          wlncli connect --perm 0298d0c6987e2e64451c7f723e15aff4dfca92f0e3973d214e206257abb0d1dd55@lnd.bitrefill.com:9735 # bitrefill
+        fi
+
+        wlncli describegraph | jq -r '.nodes | map(select(.addresses[0])) | map({connect: (.pub_key + "@" + .addresses[0].addr)}) | map(.connect) | .[]' | head -10 | xargs -n 1 wlncli connect --perm
+      } > /dev/null
+    fi
+
+    sleep 300
+  done
+} | tee ${LND_HOME}/logs/${CHAIN_NETWORK_NAME}/bitcoin/peer.log > /dev/null

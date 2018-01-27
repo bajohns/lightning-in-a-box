@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export TZ=UTC
+
+exec $GOPATH/bin/btcd \
+  --configfile /root/btcd.conf \
+  --rpccert=/rpc/rpc.cert \
+  --rpckey=/rpc/rpc.key

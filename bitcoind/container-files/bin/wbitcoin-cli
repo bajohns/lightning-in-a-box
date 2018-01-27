@@ -1,0 +1,6 @@
+#!/bin/bash
+
+/usr/bin/bitcoin-cli \
+  -rpcuser=kek \
+  -rpcpassword=kek \
+  $@

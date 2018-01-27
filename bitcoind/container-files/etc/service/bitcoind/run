@@ -1,0 +1,7 @@
+#!/bin/bash
+
+exec /usr/bin/bitcoind \
+  -datadir=/root/.bitcoin \
+  -rpcuser=kek \
+  -rpcpassword=kek \
+  -printtoconsole

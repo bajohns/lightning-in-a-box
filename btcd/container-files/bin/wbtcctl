@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export TZ=UTC
+
+$GOPATH/bin/btcctl \
+  --testnet \
+  --rpcuser=kek \
+  --rpcpass=kek \
+  --rpccert=/rpc/rpc.cert \
+  $@

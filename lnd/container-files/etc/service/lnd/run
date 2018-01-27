@@ -1,0 +1,29 @@
+#!/bin/bash
+
+export TZ=UTC
+
+
+if [[ "${CHAIN_NETWORK_CLASS}" == "testnet" ]]; then
+  COIN_PARAMS="--bitcoin.active --bitcoin.testnet"
+else
+  echo "Failed to start CHAIN_NETWORK_CLASS MUST be assigned"
+  exit 1
+fi
+
+if [[ "${ROUTE_PAYMENT}" == "true" ]]; then
+  IP=$(curl -s ifconfig.co)
+  IP_PARAMS="--externalip=${IP} "
+else
+  IP_PARAMS=""
+fi
+
+echo "Running ${COIN_PARAMS} with full node ${FULL_NODE_URL}"
+
+exec $GOPATH/bin/lnd \
+		${COIN_PARAMS} \
+		--debuglevel=debug \
+		--listen=9735 \
+    --bitcoin.node=neutrino \
+		--neutrino.connect=${FULL_NODE_URL} \
+		--configfile=/root/lnd.conf \
+		${IP_PARAMS}	> /dev/null

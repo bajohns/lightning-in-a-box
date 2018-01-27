@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export TZ=UTC
+
+$GOPATH/bin/lncli \
+  --macaroonpath ${LND_HOME}/admin.macaroon \
+  $@
