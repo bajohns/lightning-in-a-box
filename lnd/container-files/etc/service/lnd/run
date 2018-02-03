@@ -26,4 +26,4 @@ exec $GOPATH/bin/lnd \
     --bitcoin.node=neutrino \
 		--neutrino.connect=${FULL_NODE_URL} \
 		--configfile=/root/lnd.conf \
-		${IP_PARAMS}	> /dev/null
+		${IP_PARAMS}

@@ -2,4 +2,4 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-docker-compose --project-directory ${DIR}/.. exec bitcoind wbitcoin-cli $@
+docker-compose --project-directory ${DIR}/.. exec bitcoind /bin/wbitcoin-cli $@
