@@ -4,28 +4,31 @@
 #https://gist.github.com/jleskovar/dfc545148398d81715da02f61bf39b91
 #
 
-POST_INIT_SYNC_DELAY=60
+POST_INIT_SYNC_DELAY=120
 POLL_DELAY=60
 STALL_THRESHOLD=5
 
+
+# ./bin/btcctl getpeerinfo | jq -r 'map(.currentheight) |max'
+sleep $POST_INIT_SYNC_DELAY
 stalls=0
 while true; do
 	start=`/bin/wbtcctl getinfo | jq -r .blocks`
 	sleep $POLL_DELAY
 	end=`/bin/wbtcctl getinfo | jq -r .blocks`
 	echo "Processed $((end - start)) blocks in the last $POLL_DELAY seconds"
-	if [[ "$start" == "$end" ]]; then
+	if [[ "$start" == "$end" && "$start" != "" ]]; then
 		if (( stalls > STALL_THRESHOLD )); then
 			echo "Too many stalls detected. Restarting btcd..."
 			sv restart btcd
-      sleep $POLL_DELAY
+      sleep $POST_INIT_SYNC_DELAY
 			stalls=0
 		else
 			syncnode=`/bin/wbtcctl getpeerinfo | jq -r '.[] | select(.syncnode == true) | .addr' | cut -f1 -d:`
 			if [ -z "$syncnode" ]; then
 				echo "Stall detected, but no syncnode found. Restarting btcd..."
 				sv restart btcd
-        sleep $POLL_DELAY
+        sleep $POST_INIT_SYNC_DELAY
 				stalls=0
 			else
 				echo "Stall detected! Evicting potentially bad node $syncnode"
