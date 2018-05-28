@@ -4,7 +4,7 @@ services:
   lnd:
     build: lnd/
     volumes:
-      - ./run/${CHAIN_NETWORK_NAME}/lnd:/root/.lnd
+      - ./run/${CHAIN_NETWORK_NAME}/lnd:/root/.lnd:delegated
       - ./run/${CHAIN_NETWORK_NAME}/rpc:/rpc
     ports:
       - "9735:9735"
@@ -12,11 +12,11 @@ services:
     env_file:
       - ./default.env
       - ./.env
-      
+
   btcd:
     build: btcd/
     volumes:
-      - ./run/${CHAIN_NETWORK_NAME}/btcd:/root/.btcd
+      - ./run/${CHAIN_NETWORK_NAME}/btcd:/root/.btcd:delegated
       - ./run/${CHAIN_NETWORK_NAME}/rpc:/rpc
     ports:
       - "8333:8333"
@@ -30,7 +30,7 @@ services:
   bitcoind:
     build: bitcoind/
     volumes:
-      - ./run/${CHAIN_NETWORK_NAME}/bitcoind:/root/.bitcoin/${CHAIN_NETWORK_NAME}
+      - ./run/${CHAIN_NETWORK_NAME}/bitcoind:/root/.bitcoin/${CHAIN_NETWORK_NAME}:delegated
     ports:
       - "8333"
       - "8334"

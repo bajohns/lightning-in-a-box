@@ -5,6 +5,8 @@ export TZ=UTC
 
 if [[ "${CHAIN_NETWORK_CLASS}" == "testnet" ]]; then
   COIN_PARAMS="--bitcoin.active --bitcoin.testnet"
+elif [[ "${CHAIN_NETWORK_CLASS}" == "mainnet" ]]; then
+  COIN_PARAMS="--bitcoin.active --bitcoin.mainnet"
 else
   echo "Failed to start CHAIN_NETWORK_CLASS MUST be assigned"
   exit 1
